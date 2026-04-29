@@ -14,6 +14,7 @@ lint:
 
 format:
 	uv run ruff format app tests
+	uv run ruff check app tests --fix
 
 check:
 	uv run ruff check app tests

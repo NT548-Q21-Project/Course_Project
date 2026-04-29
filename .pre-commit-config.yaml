@@ -1,25 +1,19 @@
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.8
+  - repo: local
     hooks:
-      - id: ruff
-        name: ruff backend services
-        args:
-          [
-            "--fix",
-            "--config",
-            "backend/services/identity-service/pyproject.toml",
-          ]
-        files: ^backend/services/identity-service/app/.*\.py$
+      - id: identity-service-format
+        name: identity-service format
+        entry: bash -c 'cd backend/services/identity-service && make format'
+        language: system
+        pass_filenames: false
+        files: ^backend/services/identity-service/(app|tests)/.*\.py$
 
-      - id: ruff-format
-        name: ruff format backend services
-        args:
-          [
-            "--config",
-            "backend/services/identity-service/pyproject.toml",
-          ]
-        files: ^backend/services/identity-service/app/.*\.py$
+      - id: identity-service-check
+        name: identity-service check
+        entry: bash -c 'cd backend/services/identity-service && make check'
+        language: system
+        pass_filenames: false
+        files: ^backend/services/identity-service/(app|tests)/.*\.py$
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
