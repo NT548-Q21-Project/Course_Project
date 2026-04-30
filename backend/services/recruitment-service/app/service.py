@@ -171,7 +171,6 @@ def create_cv(
 
     # upload to Cloudinary if configured, otherwise skip upload
     file_url = None
-    public_id = None
     try:
         if (
             settings.CLOUDINARY_CLOUD_NAME
@@ -185,7 +184,6 @@ def create_cv(
                 folder="cvs",
             )
             file_url = res.get("secure_url") or res.get("url")
-            public_id = res.get("public_id")
     except Exception as err:
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,

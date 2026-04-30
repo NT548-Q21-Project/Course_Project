@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "AIMatch Identity Service"
     APP_ENV: str = "development"
 
-    DATABASE_URL: str 
+    DATABASE_URL: str
 
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: str = "HS256"
