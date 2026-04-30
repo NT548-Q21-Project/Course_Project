@@ -9,7 +9,7 @@ class Settings(BaseSettings):
         "postgresql+psycopg://postgres:postgres@localhost:5432/aimatch_db"
     )
 
-    JWT_SECRET_KEY: str = "change-this-secret-key"
+    JWT_SECRET_KEY: str = "dev-secret-key"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 

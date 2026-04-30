@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS recruitment_service.jobs (
     job_type VARCHAR(50) NOT NULL DEFAULT 'full_time'
         CHECK (job_type IN ('full_time', 'part_time', 'internship')),
     status VARCHAR(50) NOT NULL DEFAULT 'draft'
-        CHECK (status IN ('draft', 'active', 'closed', 'expired')),
+        CHECK (status IN ('active', 'closed')),
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     expired_at TIMESTAMP
 );
@@ -107,7 +107,6 @@ CREATE TABLE IF NOT EXISTS recruitment_service.applications (
     cv_id UUID NOT NULL
         REFERENCES recruitment_service.cvs(id)
         ON DELETE CASCADE,
-    cover_letter TEXT,
     status VARCHAR(50) NOT NULL DEFAULT 'submitted'
         CHECK (status IN ('submitted', 'interview', 'rejected')),
     applied_at TIMESTAMP NOT NULL DEFAULT NOW(),
@@ -161,11 +160,11 @@ CREATE TABLE IF NOT EXISTS ai_service.match_results (
     candidate_id UUID NOT NULL,
     cv_id UUID NOT NULL,
     job_id UUID NOT NULL,
-    score NUMERIC(5,2) NOT NULL
-        CHECK (score >= 0 AND score <= 100),
+    score VARCHAR(30) NOT NULL
+        CHECK (fit_level IN ('strong_fit', 'fit', 'weak_fit', 'not_fit')),
     strengths JSONB,
     weaknesses JSONB,
-    explanation TEXT,
+    suggestions TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE(cv_id, job_id)
 );
