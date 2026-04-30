@@ -1,0 +1,45 @@
+[project]
+name = "recruitment-service"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "email-validator>=2.3.0",
+    "fastapi>=0.136.1",
+    "httpx>=0.28.1",
+    "python-multipart>=0.0.20",
+    "psycopg[binary]>=3.3.3",
+    "pydantic-settings>=2.14.0",
+    "sqlalchemy>=2.0.49",
+    "PyMuPDF>=1.23.0",
+    "cloudinary>=1.29.0",
+    "uvicorn[standard]>=0.46.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+pythonpath = ["."]
+addopts = "-v"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
