@@ -30,6 +30,13 @@ env:
   IMAGE_NAME: aimatch-api-gateway
   IMAGE_TAG: ${{ github.sha }}
 
+  JWT_SECRET_KEY: test-secret
+  JWT_ALGORITHM: HS256
+
+  IDENTITY_SERVICE_URL: http://localhost:8001
+  RECRUITMENT_SERVICE_URL: http://localhost:8002
+  AI_SERVICE_URL: http://localhost:8003
+
 jobs:
   quality-and-test:
     name: Quality and Test
