@@ -39,7 +39,9 @@ def test_auth_proxy_forwards_request(monkeypatch, client):
 
     assert response.status_code == 200
     assert fake_client.last_request["method"] == "POST"
-    assert fake_client.last_request["url"] == "http://identity-service:8001/auth/login"
+    assert fake_client.last_request["url"] == (
+        f"{settings.IDENTITY_SERVICE_URL}/auth/login"
+    )
     assert fake_client.last_request["headers"]["content-type"].startswith(
         "application/json"
     )
@@ -67,8 +69,46 @@ def test_recruitment_proxy_injects_user_headers(monkeypatch, client):
 
     assert response.status_code == 200
     assert fake_client.last_request["url"] == (
-        "http://recruitment-service:8002/recruitment/jobs"
+        f"{settings.RECRUITMENT_SERVICE_URL}/recruitment/jobs"
     )
+    assert fake_client.last_request["headers"]["X-User-Id"] == (
+        "11111111-1111-1111-1111-111111111111"
+    )
+    assert fake_client.last_request["headers"]["X-Auth-Id"] == (
+        "22222222-2222-2222-2222-222222222222"
+    )
+    assert fake_client.last_request["headers"]["X-User-Email"] == (
+        "candidate@example.com"
+    )
+    assert fake_client.last_request["headers"]["X-User-Role"] == "candidate"
+
+
+def test_ai_proxy_injects_user_headers(monkeypatch, client):
+    fake_client = FakeAsyncClient(timeout=300.0)
+    monkeypatch.setattr("app.main.httpx.AsyncClient", lambda timeout: fake_client)
+
+    token = jwt.encode(
+        {
+            "sub": "11111111-1111-1111-1111-111111111111",
+            "auth_id": "22222222-2222-2222-2222-222222222222",
+            "email": "candidate@example.com",
+            "role": "candidate",
+        },
+        settings.JWT_SECRET_KEY,
+        algorithm=settings.JWT_ALGORITHM,
+    )
+
+    response = client.post(
+        "/api/ai/match",
+        headers={"Authorization": f"Bearer {token}"},
+        json={
+            "cv_id": "33333333-3333-3333-3333-333333333333",
+            "job_id": "44444444-4444-4444-4444-444444444444",
+        },
+    )
+
+    assert response.status_code == 200
+    assert fake_client.last_request["url"] == f"{settings.AI_SERVICE_URL}/ai/match"
     assert fake_client.last_request["headers"]["X-User-Id"] == (
         "11111111-1111-1111-1111-111111111111"
     )
