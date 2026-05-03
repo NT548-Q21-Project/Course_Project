@@ -113,3 +113,14 @@ async def proxy_recruitment(request: Request, path: str = ""):
         new_path,
         require_auth=True,
     )
+
+@app.api_route("/api/ai", methods=list(HTTP_METHODS))
+@app.api_route("/api/ai/{path:path}", methods=list(HTTP_METHODS))
+async def proxy_ai(request: Request, path: str = ""):
+    new_path = f"ai/{path}" if path else "ai"
+    return await _proxy_request(
+        request,
+        settings.AI_SERVICE_URL,
+        new_path,
+        require_auth=True,
+    )

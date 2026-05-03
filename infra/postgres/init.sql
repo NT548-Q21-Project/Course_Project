@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS recruitment_service.applications (
         REFERENCES recruitment_service.cvs(id)
         ON DELETE CASCADE,
     status VARCHAR(50) NOT NULL DEFAULT 'submitted'
-        CHECK (status IN ('submitted', 'interviewing', 'rejected', 'accepted')),
+        CHECK (status IN ('submitted', 'rejected', 'accepted')),
     applied_at TIMESTAMP NOT NULL DEFAULT NOW(),
     UNIQUE(candidate_id, job_id)
 );
@@ -164,7 +164,6 @@ CREATE TABLE IF NOT EXISTS ai_service.match_results (
     candidate_id UUID NOT NULL,
     cv_id UUID NOT NULL,
     job_id UUID NOT NULL,
-    score VARCHAR(30) NOT NULL,
     fit_level VARCHAR(30) NOT NULL
         CHECK (fit_level IN ('strong_fit', 'fit', 'weak_fit', 'not_fit')),
     strengths JSONB,
@@ -182,9 +181,6 @@ ON ai_service.match_results(cv_id);
 
 CREATE INDEX IF NOT EXISTS idx_match_results_job_id
 ON ai_service.match_results(job_id);
-
-CREATE INDEX IF NOT EXISTS idx_match_results_score
-ON ai_service.match_results(score);
 
 CREATE INDEX IF NOT EXISTS idx_match_results_created_at
 ON ai_service.match_results(created_at);

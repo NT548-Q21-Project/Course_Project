@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     IDENTITY_SERVICE_URL: str
     RECRUITMENT_SERVICE_URL: str
+    AI_SERVICE_URL: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

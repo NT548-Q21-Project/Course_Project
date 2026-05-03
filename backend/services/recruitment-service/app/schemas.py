@@ -5,14 +5,11 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 JobType = Literal["full_time", "part_time", "internship"]
-JobStatus = Literal["draft", "active", "closed", "expired"]
+JobStatus = Literal["active", "closed"]
 ApplicationStatus = Literal[
     "submitted",
-    "viewed",
-    "interviewing",
     "rejected",
     "accepted",
-    "withdrawn",
 ]
 UserRole = Literal["candidate", "recruiter"]
 
@@ -47,7 +44,7 @@ class JobCreate(JobBase):
 
 class JobUpdate(BaseModel):
     title: str | None = Field(default=None, min_length=1, max_length=255)
-    description: str | None = None
+    description: str | None = Field(default=None, min_length=1)
     responsibilities: str | None = None
     requirements: str | None = None
     nice_to_have: str | None = None
@@ -87,7 +84,6 @@ class CVResponse(BaseModel):
 class ApplicationCreate(BaseModel):
     job_id: UUID
     cv_id: UUID
-    cover_letter: str | None = None
 
 
 class ApplicationStatusUpdate(BaseModel):
@@ -99,7 +95,6 @@ class ApplicationResponse(BaseModel):
     candidate_id: UUID
     job_id: UUID
     cv_id: UUID
-    cover_letter: str | None = None
     status: ApplicationStatus
     applied_at: datetime
 
