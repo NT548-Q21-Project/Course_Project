@@ -92,17 +92,6 @@ const LoginPage: React.FC = () => {
         </p>
       </div>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-xl space-y-2 text-xs text-gray-500 border border-gray-100">
-        <p className="font-semibold text-gray-600">Demo Accounts:</p>
-        <div className="flex justify-between">
-          <span>Candidate: candidate@example.com</span>
-          <span className="font-mono">password123</span>
-        </div>
-        <div className="flex justify-between">
-          <span>Recruiter: recruiter@example.com</span>
-          <span className="font-mono">password123</span>
-        </div>
-      </div>
     </div>
   );
 };

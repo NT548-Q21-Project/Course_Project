@@ -50,6 +50,7 @@ const RegisterPage: React.FC = () => {
   return (
     <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Account</h2>
+      <p className="text-sm text-gray-500 mb-6">Use the real backend authentication service to create a candidate or recruiter account.</p>
 
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 text-sm">
