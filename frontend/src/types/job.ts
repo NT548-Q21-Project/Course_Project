@@ -1,3 +1,4 @@
+export type JobType = "full_time" | "part_time" | "internship" | "full-time" | "contract";
 export type JobStatus = "draft" | "active" | "closed" | "expired";
 
 export interface Job {
@@ -10,6 +11,7 @@ export interface Job {
   responsibilities?: string;
   benefits?: string;
   location?: string;
+  job_type?: JobType;
   status: JobStatus;
   applications_count?: number;
   created_at: string;
