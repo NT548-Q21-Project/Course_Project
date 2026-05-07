@@ -6,6 +6,7 @@ import { jobApi } from "../../services/jobApi";
 import { cvApi } from "../../services/cvApi";
 import { matchingApi } from "../../services/matchingApi";
 import { applicationApi } from "../../services/applicationApi";
+import { extractTextFromPDF } from "../../utils/pdfExtractor";
 import { Job } from "../../types/job";
 import { CV } from "../../types/cv";
 import { MatchResult } from "../../types/matching";
@@ -18,6 +19,9 @@ const CandidateJobDetailPage: React.FC = () => {
   const [job, setJob] = useState<Job | null>(null);
   const [cvs, setCvs] = useState<CV[]>([]);
   const [selectedCvId, setSelectedCvId] = useState<string>("");
+  const [cvText, setCvText] = useState("");
+  const [cvTextDirty, setCvTextDirty] = useState(false);
+  const [isLoadingPdf, setIsLoadingPdf] = useState(false);
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMatching, setIsMatching] = useState(false);
@@ -34,7 +38,9 @@ const CandidateJobDetailPage: React.FC = () => {
         ]);
         setJob(jobData);
         setCvs(cvsData);
-        if (cvsData.length > 0) setSelectedCvId(cvsData[0].id);
+        if (cvsData.length > 0) {
+          setSelectedCvId(cvsData[0].id);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -44,12 +50,49 @@ const CandidateJobDetailPage: React.FC = () => {
     loadData();
   }, [jobId]);
 
+  // Extract text from PDF when selected CV changes (unless text was manually edited)
+  useEffect(() => {
+    if (cvTextDirty) return;
+
+    const selectedCv = cvs.find((cv) => cv.id === selectedCvId);
+    if (!selectedCv || !selectedCv.file_url) {
+      setCvText("");
+      return;
+    }
+
+    const extractText = async () => {
+      setIsLoadingPdf(true);
+      try {
+        const extractedText = await extractTextFromPDF(selectedCv.file_url);
+        setCvText(extractedText);
+      } catch (error) {
+        console.error("Failed to extract PDF text:", error);
+        // Fallback: use CV metadata
+        setCvText(`CV: ${selectedCv.title}\nFile: ${selectedCv.file_name}`);
+      } finally {
+        setIsLoadingPdf(false);
+      }
+    };
+
+    extractText();
+  }, [cvs, selectedCvId, cvTextDirty]);
+
   const handleMatch = async () => {
-    if (!jobId || !selectedCvId) return;
+    if (!jobId || !selectedCvId || !job || cvText.trim().length < 20) return;
     setIsMatching(true);
     setMatchResult(null);
     try {
-      const result = await matchingApi.matchCVWithJob(selectedCvId, jobId);
+      const result = await matchingApi.matchCVWithJob({
+        cv_id: selectedCvId,
+        job_id: jobId,
+        cv_text: cvText,
+        job_title: job.title,
+        job_description: job.description,
+        responsibilities: job.responsibilities,
+        requirements: job.requirements,
+        nice_to_have: job.nice_to_have,
+        benefits: job.benefits,
+      });
       setMatchResult(result);
     } catch (err) {
       console.error(err);
@@ -64,8 +107,7 @@ const CandidateJobDetailPage: React.FC = () => {
     try {
       await applicationApi.apply({
         job_id: jobId,
-        cv_id: selectedCvId,
-        cover_letter: "I am very interested in this role and my skills align perfectly."
+        cv_id: selectedCvId
       });
       setApplied(true);
     } catch (err) {
@@ -250,7 +292,10 @@ const CandidateJobDetailPage: React.FC = () => {
                   <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">Select your CV</label>
                   <select
                     value={selectedCvId}
-                    onChange={(e) => setSelectedCvId(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedCvId(e.target.value);
+                      setCvTextDirty(false);
+                    }}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-900 transition-all mb-4"
                   >
                     {cvs.map(cv => (
@@ -258,9 +303,22 @@ const CandidateJobDetailPage: React.FC = () => {
                     ))}
                   </select>
 
+                  <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-3">CV Text for Analysis {isLoadingPdf && <span className="text-blue-500">(Extracting from PDF...)</span>}</label>
+                  <textarea
+                    value={cvText}
+                    onChange={(e) => {
+                      setCvText(e.target.value);
+                      setCvTextDirty(true);
+                    }}
+                    rows={8}
+                    disabled={isLoadingPdf}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none font-medium text-gray-900 transition-all mb-4 resize-none disabled:opacity-50"
+                    placeholder="PDF text will be extracted and displayed here. Edit manually if needed."
+                  />
+
                   <button
                     onClick={handleMatch}
-                    disabled={isMatching || cvs.length === 0}
+                    disabled={isMatching || isLoadingPdf || cvs.length === 0 || cvText.trim().length < 20}
                     className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gray-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-black transition-all active:scale-[0.98] disabled:opacity-50"
                   >
                     {isMatching ? <Loader2 className="animate-spin" size={20} /> : <TargetIcon size={20} />}
@@ -298,8 +356,8 @@ const CandidateJobDetailPage: React.FC = () => {
                       <div className="p-4 bg-emerald-50/50 rounded-2xl border border-emerald-100">
                         <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2 px-1">Strengths</h4>
                         <ul className="space-y-1">
-                          {matchResult.strengths.length > 0 ? (
-                            matchResult.strengths.map((s, i) => (
+                          {(matchResult.strengths ?? []).length > 0 ? (
+                            (matchResult.strengths ?? []).map((s, i) => (
                               <li key={i} className="text-[10px] font-bold text-gray-700 flex gap-2">
                                 <div className="mt-1.5 w-1 h-1 bg-emerald-400 rounded-full shrink-0" />
                                 {s}
@@ -313,8 +371,8 @@ const CandidateJobDetailPage: React.FC = () => {
                       <div className="p-4 bg-orange-50/50 rounded-2xl border border-orange-100">
                         <h4 className="text-[10px] font-black text-orange-600 uppercase tracking-widest mb-2 px-1">Weaknesses</h4>
                         <ul className="space-y-1">
-                          {matchResult.weaknesses.length > 0 ? (
-                            matchResult.weaknesses.map((w, i) => (
+                          {(matchResult.weaknesses ?? []).length > 0 ? (
+                            (matchResult.weaknesses ?? []).map((w, i) => (
                               <li key={i} className="text-[10px] font-bold text-gray-700 flex gap-2">
                                 <div className="mt-1.5 w-1 h-1 bg-orange-400 rounded-full shrink-0" />
                                 {w}
