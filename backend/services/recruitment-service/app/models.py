@@ -20,7 +20,6 @@ from app.db.session import Base
 
 class CV(Base):
     __tablename__ = "cvs"
-    __table_args__ = {"schema": "recruitment_service"}
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -44,7 +43,6 @@ class CV(Base):
 
 class Job(Base):
     __tablename__ = "jobs"
-    __table_args__ = {"schema": "recruitment_service"}
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
@@ -85,7 +83,6 @@ class Application(Base):
         UniqueConstraint(
             "candidate_id", "job_id", name="uq_applications_candidate_job"
         ),
-        {"schema": "recruitment_service"},
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -96,12 +93,12 @@ class Application(Base):
     candidate_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
     job_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("recruitment_service.jobs.id", ondelete="CASCADE"),
+        ForeignKey("jobs.id", ondelete="CASCADE"),
         nullable=False,
     )
     cv_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
-        ForeignKey("recruitment_service.cvs.id", ondelete="CASCADE"),
+        ForeignKey("cvs.id", ondelete="CASCADE"),
         nullable=False,
     )
     status: Mapped[str] = mapped_column(

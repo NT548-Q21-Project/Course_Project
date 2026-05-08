@@ -99,7 +99,6 @@ def db_session() -> Generator[Session, None, None]:
     try:
         with engine.begin() as connection:
             connection.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
-            connection.execute(text("CREATE SCHEMA IF NOT EXISTS ai_service"))
     except OperationalError as err:
         pytest.skip(f"Test database is not available: {err}")
 

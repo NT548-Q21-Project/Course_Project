@@ -19,7 +19,6 @@ class AuthCredential(Base):
             "status IN ('active', 'inactive', 'banned')",
             name="check_auth_status",
         ),
-        {"schema": "identity_service"},
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -70,7 +69,6 @@ class User(Base):
             "role IN ('candidate', 'recruiter')",
             name="check_user_role",
         ),
-        {"schema": "identity_service"},
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -82,7 +80,7 @@ class User(Base):
     auth_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey(
-            "identity_service.auth_credentials.id",
+            "auth_credentials.id",
             ondelete="CASCADE",
         ),
         unique=True,

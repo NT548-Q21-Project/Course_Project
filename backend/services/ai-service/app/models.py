@@ -28,7 +28,6 @@ class MatchResult(Base):
             "job_id",
             name="uq_match_results_cv_id_job_id",
         ),
-        {"schema": "ai_service"},
     )
 
     id: Mapped[uuid.UUID] = mapped_column(

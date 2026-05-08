@@ -7,7 +7,13 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM alpine:3.19
+FROM node:20-alpine
 WORKDIR /app
+
+COPY package.json package-lock.json ./
+RUN npm install --omit=dev
+
 COPY --from=builder /app/dist ./dist
-CMD ["tail", "-f", "/dev/null"]
+
+EXPOSE 80
+CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "80"]
