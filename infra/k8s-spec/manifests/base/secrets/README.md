@@ -1,0 +1,1 @@
+## This manifests only serve local development, since env file is ignored in this repo, and ArgoCD wont be able to find these env files and load it to secret resources.
