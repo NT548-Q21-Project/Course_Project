@@ -29,8 +29,7 @@ env:
   SERVICE_PATH: backend/services/recruitment-service
   IMAGE_NAME: aimatch-recruitment-service
   IMAGE_TAG: ${{ github.sha }}
-  TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/aimatch_test_db?options=-csearch_path%3Drecruitment_service
-
+  TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/aimatch_test_db
 jobs:
   quality-and-test:
     name: Quality and Test
