@@ -15,6 +15,8 @@ COPY pyproject.toml ./
 
 RUN uv lock && uv sync --frozen --no-dev --no-cache
 
+RUN uv pip install prometheus-fastapi-instrumentator
+
 FROM python:3.12-slim AS runtime
 
 WORKDIR /app
