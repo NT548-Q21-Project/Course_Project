@@ -1,15 +1,10 @@
-variable "cluster_name" {
-  description = "EKS cluster name"
-  type        = string
-}
-
 variable "environment" {
   description = "Environment name"
   type        = string
 }
 
-variable "rds_endpoint" {
-  description = "RDS endpoint (host:port format)"
+variable "cluster_name" {
+  description = "EKS cluster name"
   type        = string
 }
 

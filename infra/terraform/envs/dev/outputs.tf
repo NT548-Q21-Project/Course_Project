@@ -74,6 +74,17 @@ output "ecr_repository_urls" {
   value       = module.ecr.repository_urls
 }
 
+# S3 Outputs
+output "uploads_bucket_name" {
+  description = "Name of the S3 uploads bucket"
+  value       = module.s3.bucket_name
+}
+
+output "uploads_bucket_arn" {
+  description = "ARN of the S3 uploads bucket"
+  value       = module.s3.bucket_arn
+}
+
 # Secrets Outputs
 output "groq_api_key_arn" {
   description = "ARN of the Groq API key secret"
@@ -85,9 +96,19 @@ output "jwt_secret_arn" {
   value       = module.secrets.jwt_secret_arn
 }
 
-output "db_credentials_arn" {
-  description = "ARN of the database credentials secret"
-  value       = module.secrets.db_credentials_arn
+output "identity_db_arn" {
+  description = "ARN of the identity service database credentials secret"
+  value       = module.secrets.identity_db_arn
+}
+
+output "recruitment_db_arn" {
+  description = "ARN of the recruitment service database credentials secret"
+  value       = module.secrets.recruitment_db_arn
+}
+
+output "ai_db_arn" {
+  description = "ARN of the AI service database credentials secret"
+  value       = module.secrets.ai_db_arn
 }
 
 # RDS Outputs

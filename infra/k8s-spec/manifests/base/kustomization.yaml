@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
-  
+
   - configmaps/identity-service-configmap.yaml
   - configmaps/recruitment-service-configmap.yaml
   - configmaps/ai-service-configmap.yaml
@@ -28,4 +28,6 @@ resources:
   - services/ai-service.yaml
   - services/api-gateway.yaml
 
-namespace: aimatch
+  - ingress.yaml
+
+namespace: services

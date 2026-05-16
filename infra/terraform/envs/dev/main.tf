@@ -15,6 +15,13 @@ locals {
   )
 }
 
+# Random password for RDS (generated here to avoid circular dependency)
+resource "random_password" "db_password" {
+  length           = 32
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
+
 # Load common modules
 module "vpc" {
   source = "../../modules/vpc"
@@ -57,9 +64,9 @@ module "ecr" {
   tags        = local.module_tags
 }
 
-# Secrets Manager Module - Application secrets
-module "secrets" {
-  source = "../../modules/secrets"
+# S3 Module - Uploads bucket
+module "s3" {
+  source = "../../modules/s3"
 
   environment  = var.environment
   cluster_name = var.cluster_name
@@ -76,11 +83,23 @@ module "rds" {
   vpc_id                        = module.vpc.vpc_id
   private_subnet_ids            = module.vpc.private_subnet_ids
   eks_cluster_security_group_id = module.eks.cluster_security_group_id
-  db_username = "appuser"
-  db_password = module.secrets.db_password
-  tags = local.module_tags
+  db_username                   = "appuser"
+  db_password                   = random_password.db_password.result
+  tags                          = local.module_tags
+}
 
-  depends_on = [module.secrets, module.eks]
+# Secrets Manager Module - Application secrets
+# Note: secrets module generates its own JWT password and constructs DATABASE_URLs
+# using the RDS endpoint. The RDS password is managed separately here.
+module "secrets" {
+  source = "../../modules/secrets"
+
+  environment   = var.environment
+  cluster_name  = var.cluster_name
+  rds_endpoint  = module.rds.db_endpoint
+  tags          = local.module_tags
+
+  depends_on = [module.rds]
 }
 
 # IAM Roles with Pod Identity for all services
@@ -89,12 +108,15 @@ module "irsa" {
 
   cluster_name       = var.cluster_name
   environment        = var.environment
-  groq_api_key_arn   = module.secrets.groq_api_key_arn
   jwt_secret_arn     = module.secrets.jwt_secret_arn
-  db_credentials_arn = module.secrets.db_credentials_arn
+  identity_db_arn    = module.secrets.identity_db_arn
+  recruitment_db_arn = module.secrets.recruitment_db_arn
+  ai_db_arn          = module.secrets.ai_db_arn
+  groq_api_key_arn   = module.secrets.groq_api_key_arn
+  bucket_arn         = module.s3.bucket_arn
   tags               = local.module_tags
 
-  depends_on = [module.eks]
+  depends_on = [module.s3, module.secrets]
 }
 
 # AWS Load Balancer Controller
@@ -115,10 +137,21 @@ module "alb" {
 module "argocd" {
   source = "../../modules/argocd"
 
-  cluster_name        = var.cluster_name
-  environment         = var.environment
-  argocd_hostname     = var.argocd_hostname
-  tags                = local.module_tags
+  cluster_name    = var.cluster_name
+  environment     = var.environment
+  argocd_hostname = var.argocd_hostname
+  tags            = local.module_tags
 
   depends_on = [module.alb]
+}
+
+# External Secrets Operator
+module "eso" {
+  source = "../../modules/eso"
+
+  cluster_name = var.cluster_name
+  environment  = var.environment
+  tags         = local.module_tags
+
+  depends_on = [module.eks]
 }

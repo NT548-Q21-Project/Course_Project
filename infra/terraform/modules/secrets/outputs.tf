@@ -8,18 +8,17 @@ output "jwt_secret_arn" {
   value       = aws_secretsmanager_secret.jwt_secret.arn
 }
 
-output "db_credentials_arn" {
-  description = "ARN of the database credentials secret"
-  value       = aws_secretsmanager_secret.db_credentials.arn
+output "identity_db_arn" {
+  description = "ARN of the identity service database credentials secret"
+  value       = aws_secretsmanager_secret.identity_db.arn
 }
 
-output "db_username" {
-  description = "Database username"
-  value       = "admin"
+output "recruitment_db_arn" {
+  description = "ARN of the recruitment service database credentials secret"
+  value       = aws_secretsmanager_secret.recruitment_db.arn
 }
 
-output "db_password" {
-  description = "Database password (auto-generated)"
-  value       = random_password.db_password.result
-  sensitive   = true
+output "ai_db_arn" {
+  description = "ARN of the AI service database credentials secret"
+  value       = aws_secretsmanager_secret.ai_db.arn
 }
