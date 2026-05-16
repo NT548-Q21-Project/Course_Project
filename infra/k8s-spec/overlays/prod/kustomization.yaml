@@ -21,50 +21,62 @@ images:
     newTag: latest
 
 patches:
-  - |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: identity-service
+      spec:
+        template:
+          spec:
+            containers:
+            - name: identity-service
+              imagePullPolicy: Always
+    target:
+      kind: Deployment
       name: identity-service
-    spec:
-      template:
-        spec:
-          containers:
-          - name: identity-service
-            imagePullPolicy: Always
-  - |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: recruitment-service
+      spec:
+        template:
+          spec:
+            containers:
+            - name: recruitment-service
+              imagePullPolicy: Always
+    target:
+      kind: Deployment
       name: recruitment-service
-    spec:
-      template:
-        spec:
-          containers:
-          - name: recruitment-service
-            imagePullPolicy: Always
-  - |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ai-service
+      spec:
+        template:
+          spec:
+            containers:
+            - name: ai-service
+              imagePullPolicy: Always
+    target:
+      kind: Deployment
       name: ai-service
-    spec:
-      template:
-        spec:
-          containers:
-          - name: ai-service
-            imagePullPolicy: Always
-  - |-
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: api-gateway
+      spec:
+        template:
+          spec:
+            containers:
+            - name: api-gateway
+              imagePullPolicy: Always
+    target:
+      kind: Deployment
       name: api-gateway
-    spec:
-      template:
-        spec:
-          containers:
-          - name: api-gateway
-            imagePullPolicy: Always
 
 replicas:
   - name: identity-service
