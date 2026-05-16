@@ -10,8 +10,14 @@ from app.router import router as identity_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    create_database_if_not_exists()
-    Base.metadata.create_all(bind=engine)
+    try:
+        create_database_if_not_exists()
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        import logging
+
+        logging.error(f"Startup error: {e}")
+        raise
     yield
 
 
