@@ -18,8 +18,8 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
-variable "rds_sg_id" {
-  description = "Security group ID for the RDS instance"
+variable "eks_cluster_security_group_id" {
+  description = "Security group ID of the EKS cluster (default node group SG)"
   type        = string
 }
 

@@ -43,12 +43,6 @@ variable "node_disk_size" {
   type        = number
 }
 
-variable "cluster_log_retention_days" {
-  description = "Number of days to retain cluster logs"
-  type        = number
-  default     = 7
-}
-
 variable "environment" {
   description = "Environment name (e.g., dev, prod)"
   type        = string

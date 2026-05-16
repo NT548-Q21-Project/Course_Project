@@ -3,10 +3,6 @@ output "cluster_name" {
   value       = aws_eks_cluster.main.name
 }
 
-# Pod Identity Note:
-# IAM authentication for pods is handled via EKS Pod Identity.
-# Pod Identity associations (aws_eks_pod_identity_association)
-# will be created per-service in Phase 6 (IAM/RBAC configuration).
 output "cluster_endpoint" {
   description = "Endpoint of the EKS cluster"
   value       = aws_eks_cluster.main.endpoint

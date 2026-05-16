@@ -87,6 +87,7 @@ override.tf.json
 # Test / Reports
 reports/
 coverage/
+test_terraform/
 
 
 # Terraform

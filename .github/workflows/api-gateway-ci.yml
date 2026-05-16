@@ -27,7 +27,7 @@ permissions:
 env:
   PYTHON_VERSION: "3.12"
   SERVICE_PATH: backend/services/api-gateway
-  IMAGE_NAME: aimatch-api-gateway
+  IMAGE_NAME: api-gateway
   IMAGE_TAG: ${{ github.sha }}
 
   JWT_SECRET_KEY: test-secret
@@ -36,6 +36,9 @@ env:
   IDENTITY_SERVICE_URL: http://identity-service:8001
   RECRUITMENT_SERVICE_URL: http://recruitment-service:8002
   AI_SERVICE_URL: http://ai-service:8003
+
+  AWS_REGION: ap-southeast-1
+  AWS_ACCOUNT_ID: 832388983718
 
 jobs:
   quality-and-test:
@@ -71,7 +74,7 @@ jobs:
         run: make test
 
   docker-build:
-    name: Docker Build
+    name: Docker Build and Push
     runs-on: ubuntu-latest
     needs: quality-and-test
 
@@ -82,16 +85,28 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build api-gateway image
+      - name: Build and push api-gateway image to ECR
         uses: docker/build-push-action@v6
         with:
           context: ./backend/services/api-gateway
           file: ./backend/services/api-gateway/Dockerfile
-          push: false
+          push: true
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:latest
           cache-from: type=gha,scope=api-gateway
           cache-to: type=gha,mode=max,scope=api-gateway

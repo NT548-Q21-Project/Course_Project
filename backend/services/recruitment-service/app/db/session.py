@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.core.config import settings
@@ -18,3 +18,22 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+def create_database_if_not_exists() -> None:
+    # Lấy db name từ DATABASE_URL
+    db_name = settings.DATABASE_URL.split("/")[-1]
+
+    # Connect vào postgres default db
+    postgres_url = settings.DATABASE_URL.rsplit("/", 1)[0] + "/postgres"
+    temp_engine = create_engine(postgres_url, isolation_level="AUTOCOMMIT")
+
+    with temp_engine.connect() as conn:
+        result = conn.execute(
+            text("SELECT 1 FROM pg_database WHERE datname = :db_name"),
+            {"db_name": db_name},
+        )
+        if not result.fetchone():
+            conn.execute(text(f"CREATE DATABASE {db_name}"))
+
+    temp_engine.dispose()

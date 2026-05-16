@@ -12,3 +12,8 @@ output "db_name" {
   description = "Name of the database"
   value       = aws_db_instance.main.db_name
 }
+
+output "rds_security_group_id" {
+  description = "Security group ID for the RDS instance"
+  value       = aws_security_group.rds.id
+}

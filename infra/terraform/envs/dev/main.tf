@@ -1,53 +1,3 @@
-terraform {
-  required_version = ">= 1.14.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6.0"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 3.1.0"
-    }
-  }
-
-  # Backend configuration (uncomment and fill in bucket name)
-  backend "s3" {
-    bucket         = "nttkhoi44-mlops-project-tfstate"
-    key            = "dev/terraform.tfstate"
-    region         = "ap-southeast-1"
-    dynamodb_table = "terraform-lock"
-    encrypt        = true
-  }
-}
-
-provider "aws" {
-  region = var.region
-
-  default_tags {
-    tags = local.default_tags
-  }
-}
-
-provider "helm" {
-  kubernetes = {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_ca_certificate)
-
-    exec = {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args = [
-        "eks", "get-token",
-        "--cluster-name", var.cluster_name,
-        "--region", var.region,
-      ]
-    }
-  }
-}
-
-
 # Local values for consistent tagging
 locals {
   default_tags = {
@@ -79,16 +29,6 @@ module "vpc" {
   tags                  = local.module_tags
 }
 
-# Security Groups module
-module "security_groups" {
-  source       = "../../modules/security-groups"
-
-  vpc_id       = module.vpc.vpc_id
-  environment  = var.environment
-  cluster_name = var.cluster_name
-  tags         = local.module_tags
-}
-
 module "eks" {
   source = "../../modules/eks"
 
@@ -96,7 +36,6 @@ module "eks" {
   kubernetes_version         = var.kubernetes_version
   vpc_id                     = module.vpc.vpc_id
   private_subnet_ids         = module.vpc.private_subnet_ids
-  cluster_log_retention_days = var.cluster_log_retention_days
   environment                = var.environment
   tags                       = local.module_tags
 
@@ -122,28 +61,26 @@ module "ecr" {
 module "secrets" {
   source = "../../modules/secrets"
 
-  environment = var.environment
+  environment  = var.environment
   cluster_name = var.cluster_name
-  tags        = local.module_tags
+  tags         = local.module_tags
 }
 
 # RDS Module - PostgreSQL database
+# Uses EKS cluster's default security group for ingress
 module "rds" {
   source = "../../modules/rds"
 
-  environment        = var.environment
-  cluster_name       = var.cluster_name
-  vpc_id             = module.vpc.vpc_id
-  private_subnet_ids = module.vpc.private_subnet_ids
-  rds_sg_id          = module.security_groups.rds_sg_id
-
-  # db_username = module.secrets.db_username
+  environment                   = var.environment
+  cluster_name                  = var.cluster_name
+  vpc_id                        = module.vpc.vpc_id
+  private_subnet_ids            = module.vpc.private_subnet_ids
+  eks_cluster_security_group_id = module.eks.cluster_security_group_id
   db_username = "appuser"
   db_password = module.secrets.db_password
-
   tags = local.module_tags
 
-  depends_on = [module.secrets]
+  depends_on = [module.secrets, module.eks]
 }
 
 # IAM Roles with Pod Identity for all services
@@ -172,4 +109,16 @@ module "alb" {
   tags                   = local.module_tags
 
   depends_on = [module.irsa]
+}
+
+# ArgoCD - GitOps Continuous Delivery
+module "argocd" {
+  source = "../../modules/argocd"
+
+  cluster_name        = var.cluster_name
+  environment         = var.environment
+  argocd_hostname     = var.argocd_hostname
+  tags                = local.module_tags
+
+  depends_on = [module.alb]
 }

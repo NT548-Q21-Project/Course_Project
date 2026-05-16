@@ -22,12 +22,6 @@ variable "kubernetes_version" {
   default     = "1.33"
 }
 
-variable "cluster_log_retention_days" {
-  description = "Number of days to retain cluster logs"
-  type        = number
-  default     = 7
-}
-
 # Node Group variables
 variable "node_instance_types" {
   description = "Instance types for the managed node group"
@@ -94,4 +88,17 @@ variable "tags" {
   description = "Additional tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+# ArgoCD variables
+variable "argocd_hostname" {
+  description = "Hostname for ArgoCD ingress (e.g., argocd.dev.example.com)"
+  type        = string
+  default     = "argocd.dev.example.com"
+}
+
+variable "argocd_chart_version" {
+  description = "Version of the ArgoCD Helm chart"
+  type        = string
+  default     = "7.5.0"
 }

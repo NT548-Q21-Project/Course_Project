@@ -16,13 +16,6 @@ resource "aws_eks_cluster" "main" {
   role_arn = aws_iam_role.cluster.arn
   version  = var.kubernetes_version
 
-  # Enable control plane logging
-  enabled_cluster_log_types = [
-    "api",
-    "authenticator",
-    "controllerManager",
-  ]
-
   # VPC configuration - cluster endpoints in both public and private subnets
   vpc_config {
     subnet_ids                   = var.private_subnet_ids
@@ -68,8 +61,8 @@ resource "aws_security_group" "cluster" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    # cidr_blocks = ["0.0.0.0/0"]
-    cidr_blocks = [data.aws_vpc.selected.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
+    # cidr_blocks = [data.aws_vpc.selected.cidr_block]
   }
 
   # Allow all outbound traffic
@@ -166,9 +159,6 @@ resource "aws_eks_addon" "ebs_csi_driver" {
 }
 
 # EKS Pod Identity Agent
-# This addon enables EKS Pod Identity for IAM authentication.
-# Pod Identity associations (aws_eks_pod_identity_association)
-# will be created per-service in Phase 6 (IAM/RBAC configuration).
 resource "aws_eks_addon" "pod_identity_agent" {
   cluster_name = aws_eks_cluster.main.name
   addon_name   = "eks-pod-identity-agent"
@@ -177,7 +167,6 @@ resource "aws_eks_addon" "pod_identity_agent" {
 }
 
 # EBS CSI Driver Pod Identity Association
-# This association binds the EBS CSI Driver service account to the IAM role.
 resource "aws_eks_pod_identity_association" "ebs_csi" {
   cluster_name    = aws_eks_cluster.main.name
   namespace       = "kube-system"

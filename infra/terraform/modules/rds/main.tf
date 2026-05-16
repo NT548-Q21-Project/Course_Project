@@ -23,6 +23,29 @@ resource "aws_db_subnet_group" "main" {
   )
 }
 
+# RDS Security Group
+# Allows PostgreSQL traffic from the EKS cluster's default security group
+resource "aws_security_group" "rds" {
+  name_prefix = "${var.environment}-${var.cluster_name}-rds-sg-"
+  description = "Security group for RDS PostgreSQL instance"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    description     = "PostgreSQL from EKS cluster"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [var.eks_cluster_security_group_id]
+  }
+
+  tags = merge(
+    local.base_tags,
+    {
+      Name = "${var.environment}-${var.cluster_name}-rds-sg"
+    }
+  )
+}
+
 # RDS PostgreSQL Instance
 resource "aws_db_instance" "main" {
   identifier              = "${var.environment}-${var.cluster_name}"
@@ -35,7 +58,7 @@ resource "aws_db_instance" "main" {
   username                = var.db_username
   password                = var.db_password
   db_subnet_group_name    = aws_db_subnet_group.main.name
-  vpc_security_group_ids  = [var.rds_sg_id]
+  vpc_security_group_ids  = [aws_security_group.rds.id]
   skip_final_snapshot     = true
   publicly_accessible     = false
   multi_az                = false

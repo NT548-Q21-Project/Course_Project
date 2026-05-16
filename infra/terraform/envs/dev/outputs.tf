@@ -44,7 +44,7 @@ output "node_group_role_arn" {
 }
 
 output "cluster_security_group_id" {
-  description = "Security group ID of the EKS cluster"
+  description = "Security group ID of the EKS cluster (default node group SG)"
   value       = module.eks.cluster_security_group_id
 }
 
@@ -66,27 +66,6 @@ aws eks update-kubeconfig \
 Or set the KUBECONFIG environment variable:
 export KUBECONFIG=~/.kube/config-${var.environment}
 EOT
-}
-
-# Security Groups Outputs
-output "alb_sg_id" {
-  description = "ID of the ALB security group"
-  value       = module.security_groups.alb_sg_id
-}
-
-output "api_gateway_sg_id" {
-  description = "ID of the API Gateway security group"
-  value       = module.security_groups.api_gateway_sg_id
-}
-
-output "services_sg_id" {
-  description = "ID of the services security group"
-  value       = module.security_groups.services_sg_id
-}
-
-output "rds_sg_id" {
-  description = "ID of the RDS security group"
-  value       = module.security_groups.rds_sg_id
 }
 
 # ECR Outputs
@@ -122,6 +101,11 @@ output "db_port" {
   value       = module.rds.db_port
 }
 
+output "rds_security_group_id" {
+  description = "Security group ID for the RDS instance"
+  value       = module.rds.rds_security_group_id
+}
+
 # IAM Roles (Pod Identity)
 output "lb_controller_role_arn" {
   description = "IAM role ARN for AWS Load Balancer Controller"
@@ -146,6 +130,22 @@ output "recruitment_service_role_arn" {
 output "ai_service_role_arn" {
   description = "IAM role ARN for AI Service"
   value       = module.irsa.ai_service_role_arn
+}
+
+# ArgoCD Outputs
+output "argocd_namespace" {
+  description = "Kubernetes namespace where ArgoCD is deployed"
+  value       = module.argocd.argocd_namespace
+}
+
+output "argocd_hostname" {
+  description = "Hostname used to access ArgoCD"
+  value       = module.argocd.argocd_hostname
+}
+
+output "argocd_ingress_status" {
+  description = "Status of the ArgoCD ingress (address may be pending until ALB provisions)"
+  value       = module.argocd.argocd_ingress_status
 }
 
 # Notes for K8s manifests deployment:

@@ -5,7 +5,6 @@ region      = "ap-southeast-1"
 # Cluster
 cluster_name          = "myapp-dev"
 kubernetes_version    = "1.33"
-cluster_log_retention_days = 7
 
 # Node Group
 node_instance_types   = ["c7i-flex.large"]
