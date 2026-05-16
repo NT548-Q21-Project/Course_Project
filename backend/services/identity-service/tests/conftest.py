@@ -9,13 +9,13 @@ from app.db.session import get_db
 from app.main import app
 from app.models import Base
 
-TEST_DATABASE_URL = os.getenv(
-    "TEST_DATABASE_URL",
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
     "postgresql+psycopg://postgres:postgres@localhost:5433/aimatch_test_db",
 )
 
 engine = create_engine(
-    TEST_DATABASE_URL,
+    DATABASE_URL,
     pool_pre_ping=True,
 )
 

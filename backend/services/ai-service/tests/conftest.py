@@ -90,7 +90,7 @@ def fake_db_dependency():
 @pytest.fixture
 def db_session() -> Generator[Session, None, None]:
     test_database_url = os.getenv(
-        "TEST_DATABASE_URL",
+        "DATABASE_URL",
         "postgresql+psycopg://postgres:postgres@localhost:5433/aimatch_test_db",
     )
 
