@@ -28,6 +28,7 @@ def get_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
+
 def create_database_if_not_exists() -> None:
     # Lấy db name từ DATABASE_URL
     db_name = settings.DATABASE_URL.split("/")[-1]
@@ -39,7 +40,7 @@ def create_database_if_not_exists() -> None:
     with temp_engine.connect() as conn:
         result = conn.execute(
             text("SELECT 1 FROM pg_database WHERE datname = :db_name"),
-            {"db_name": db_name}
+            {"db_name": db_name},
         )
         if not result.fetchone():
             conn.execute(text(f"CREATE DATABASE {db_name}"))

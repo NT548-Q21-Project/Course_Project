@@ -7,11 +7,13 @@ from app.core.config import settings
 from app.db.session import Base, create_database_if_not_exists, engine
 from app.router import router
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_database_if_not_exists()
     Base.metadata.create_all(bind=engine)
     yield
+
 
 app = FastAPI(
     title=settings.APP_NAME,
