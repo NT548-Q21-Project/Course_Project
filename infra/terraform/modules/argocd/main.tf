@@ -32,7 +32,10 @@ resource "helm_release" "argocd" {
   values = [
     yamlencode({
       configs = {
-        params = { "server.insecure" = true }
+        params = {
+          "server.insecure"    = true,
+          "server.rootpath"    = "/argocd"
+        }
       }
     })
   ]
@@ -58,7 +61,7 @@ resource "kubernetes_ingress_v1" "argocd" {
       # host = var.argocd_hostname
       http {
         path {
-          path     = "/"
+          path     = "/argocd"
           path_type = "Prefix"
           backend {
             service {

@@ -16,10 +16,14 @@ resources:
   - external-secrets/ai-service-secret.yaml
   - external-secrets/api-gateway-secret.yaml
 
+  - deployments/frontend-deployment.yaml
+
   - deployments/identity-service-deployment.yaml
   - deployments/recruitment-service-deployment.yaml
   - deployments/ai-service-deployment.yaml
   - deployments/api-gateway-deployment.yaml
+
+  - services/frontend.yaml
 
   - services/identity-service.yaml
   - services/recruitment-service.yaml
