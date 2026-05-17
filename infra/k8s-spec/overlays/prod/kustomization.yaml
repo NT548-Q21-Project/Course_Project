@@ -19,6 +19,9 @@ images:
   - name: aimatch-api-gateway
     newName: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/api-gateway
     newTag: latest
+  - name: frontend
+    newName: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/frontend
+    newTag: latest
 
 patches:
   - patch: |-
