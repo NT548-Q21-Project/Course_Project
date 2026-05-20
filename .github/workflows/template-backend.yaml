@@ -258,8 +258,12 @@ jobs:
           OVERLAY_ENV: ${{ inputs.overlay_env }}
         run: |
           set -euo pipefail
-          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          echo "Detected branch: ${BRANCH_NAME}"
+
+          SOURCE_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TARGET_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
+
+          echo "Source branch: ${SOURCE_BRANCH}"
+          echo "Target branch: ${TARGET_BRANCH}"
 
           if [[ -n "${OVERLAY_ENV}" ]]; then
             ENV_DIR="${OVERLAY_ENV}"

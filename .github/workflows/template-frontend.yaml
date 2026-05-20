@@ -109,10 +109,16 @@ jobs:
         run: |
           set -euo pipefail
 
+          SOURCE_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TARGET_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
+
+          echo "Source branch: ${SOURCE_BRANCH}"
+          echo "Target branch: ${TARGET_BRANCH}"
+
           if [[ -n "${OVERLAY_ENV}" ]]; then
             ENV_DIR="${OVERLAY_ENV}"
           else
-            case "${GITHUB_REF_NAME}" in
+            case "${BRANCH_NAME}" in
               main)
                 ENV_DIR="prod"
                 ;;
@@ -120,7 +126,7 @@ jobs:
                 ENV_DIR="stage"
                 ;;
               *)
-                echo "Skip overlay update for branch ${GITHUB_REF_NAME}" >&2
+                echo "Skip overlay update for branch ${BRANCH_NAME}" >&2
                 exit 0
                 ;;
             esac
