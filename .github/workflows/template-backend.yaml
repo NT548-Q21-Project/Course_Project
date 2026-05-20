@@ -268,7 +268,7 @@ jobs:
           if [[ -n "${OVERLAY_ENV}" ]]; then
             ENV_DIR="${OVERLAY_ENV}"
           else
-            case "${BRANCH_NAME}" in
+            case "${TARGET_BRANCH}" in
               main)
                 ENV_DIR="prod"
                 ;;
@@ -276,7 +276,7 @@ jobs:
                 ENV_DIR="stage"
                 ;;
               *)
-                echo "Skip overlay update for branch ${BRANCH_NAME}" >&2
+                echo "Skip overlay update for branch ${TARGET_BRANCH}" >&2
                 exit 0
                 ;;
             esac
