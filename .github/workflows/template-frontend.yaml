@@ -86,10 +86,9 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
-		
-		concurrency:
+    concurrency:
       group: update-kustomize-${{ github.event.pull_request.number || github.ref_name }}
-      queue: max
+			queue: max
 
     steps:
       - name: Checkout code
