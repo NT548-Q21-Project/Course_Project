@@ -7,5 +7,5 @@ spec:
     spec:
       containers:
         - name: identity-service
-          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/identity-service:latest
+          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/identity-service:48c85a52f22319f47656305ed82e0123e7eddffe
           imagePullPolicy: Always
