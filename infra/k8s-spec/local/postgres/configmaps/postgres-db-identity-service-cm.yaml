@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-identity-service-config
-data:
-  POSTGRES_DB: identity_service
-  POSTGRES_USER: postgres

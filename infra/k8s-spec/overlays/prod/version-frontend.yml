@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  template:
+    spec:
+      containers:
+        - name: frontend
+          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/frontend:4d8b832d3b4faec360db09c8f347df6ee788f7fb
+          imagePullPolicy: Always

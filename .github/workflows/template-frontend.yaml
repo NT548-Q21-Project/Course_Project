@@ -1,0 +1,160 @@
+name: Build and Push Frontend Image
+
+on:
+  workflow_call:
+    inputs:
+      service_path:
+        type: string
+        required: true
+      image_name:
+        type: string
+        required: true
+      image_tag:
+        type: string
+        required: true
+      aws_region:
+        type: string
+        required: false
+        default: "ap-southeast-1"
+      aws_account_id:
+        type: string
+        required: false
+        default: ""
+      overlay_env:
+        type: string
+        required: false
+        default: ""
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      VITE_API_BASE_URL:
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  SERVICE_PATH: ${{ inputs.service_path }}
+  IMAGE_NAME: ${{ inputs.image_name }}
+  IMAGE_TAG: ${{ inputs.image_tag }}
+  AWS_REGION: ${{ inputs.aws_region }}
+  AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
+
+jobs:
+  build-and-push:
+    name: Build and Push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push frontend image to ECR
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.SERVICE_PATH }}
+          file: ${{ env.SERVICE_PATH }}/Dockerfile
+          build-args: |
+            VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: type=gha,scope=${{ env.IMAGE_NAME }}
+          cache-to: type=gha,mode=max,scope=${{ env.IMAGE_NAME }}
+
+  update-kustomize-version:
+    name: Update Kustomize Version
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    concurrency:
+      group: update-kustomize-${{ github.event.pull_request.number || github.ref_name }}
+      queue: max
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Update overlay version
+        env:
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_ACCOUNT_ID: ${{ env.AWS_ACCOUNT_ID }}
+          OVERLAY_ENV: ${{ inputs.overlay_env }}
+        run: |
+          set -euo pipefail
+
+          SOURCE_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TARGET_BRANCH="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
+
+          echo "Source branch: ${SOURCE_BRANCH}"
+          echo "Target branch: ${TARGET_BRANCH}"
+
+          if [[ -n "${OVERLAY_ENV}" ]]; then
+            ENV_DIR="${OVERLAY_ENV}"
+          else
+            case "${TARGET_BRANCH}" in
+              main)
+                ENV_DIR="prod"
+                ;;
+              develop|stage)
+                ENV_DIR="stage"
+                ;;
+              *)
+                echo "Skip overlay update for branch ${TARGET_BRANCH}" >&2
+                exit 0
+                ;;
+            esac
+          fi
+
+          VERSION_FILE="infra/k8s-spec/overlays/${ENV_DIR}/version-${IMAGE_NAME}.yml"
+          IMAGE_REF="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${IMAGE_NAME}:${IMAGE_TAG}"
+
+          export IMAGE_REF
+          echo "Image ref: ${IMAGE_REF}"
+
+          yq e -i '
+            (select(.kind == "Deployment" and .metadata.name == strenv(IMAGE_NAME))
+              .spec.template.spec.containers[] | select(.name == strenv(IMAGE_NAME)).image) = strenv(IMAGE_REF)
+          ' "${VERSION_FILE}"
+
+          if git diff --quiet "${VERSION_FILE}"; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          TARGET_BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add "${VERSION_FILE}"
+          git commit -m "chore(kustomize): update ${IMAGE_NAME} to ${IMAGE_TAG} [skip ci]"
+          git push origin HEAD:"${TARGET_BRANCH}"

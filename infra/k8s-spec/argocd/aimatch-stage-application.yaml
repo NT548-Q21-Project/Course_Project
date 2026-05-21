@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aimatch-stage
+  namespace: argocd
+  
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/NT548-Q21-Project/Course_Project
+    targetRevision: stage
+    path: infra/k8s-spec/overlays/stage
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: aimatch
+
+  syncPolicy:
+    automated:
+      prune: true      
+      selfHeal: true 
+    syncOptions:
+    - CreateNamespace=true
+
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  revisionHistoryLimit: 10

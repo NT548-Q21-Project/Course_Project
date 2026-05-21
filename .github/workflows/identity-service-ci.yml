@@ -7,7 +7,6 @@ on:
       - develop
     paths:
       - "backend/services/identity-service/**"
-      - "docker-compose.yml"
       - ".github/workflows/identity-service-ci.yml"
 
   pull_request:
@@ -16,107 +15,25 @@ on:
       - develop
     paths:
       - "backend/services/identity-service/**"
-      - "docker-compose.yml"
       - ".github/workflows/identity-service-ci.yml"
+      - ".github/workflows/template-backend.yaml"
 
   workflow_dispatch:
 
 permissions:
-  contents: read
-
-env:
-  PYTHON_VERSION: "3.12"
-  SERVICE_PATH: backend/services/identity-service
-  IMAGE_NAME: identity-service
-  IMAGE_TAG: ${{ github.sha }}
-  DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5433/aimatch_test_db
-  JWT_SECRET_KEY: test-secret
-
-  AWS_REGION: ap-southeast-1
-  AWS_ACCOUNT_ID: 832388983718
+  contents: write
 
 jobs:
-  quality-and-test:
-    name: Quality and Test
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-        working-directory: ${{ env.SERVICE_PATH }}
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: aimatch_test_db
-        ports:
-          - 5433:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d aimatch_test_db"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          version: "0.5.31"
-          enable-cache: true
-          cache-dependency-glob: "${{ env.SERVICE_PATH }}/uv.lock"
-
-      - name: Set up Python
-        run: uv python install ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: make ci-install
-
-      - name: Run quality checks
-        run: make check
-
-      - name: Run tests
-        run: make test
-
-  docker-build:
-    name: Docker Build and Push
-    runs-on: ubuntu-latest
-    needs: quality-and-test
-
-    permissions:
-      contents: read
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build and push identity-service image to ECR
-        uses: docker/build-push-action@v6
-        with:
-          context: ./backend/services/identity-service
-          file: ./backend/services/identity-service/Dockerfile
-          push: true
-          tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.IMAGE_NAME }}:latest
-          cache-from: type=gha,scope=identity-service
-          cache-to: type=gha,mode=max,scope=identity-service
+  identity-service-ci:
+    uses: ./.github/workflows/template-backend.yaml
+    secrets: inherit
+    with:
+      service_path: backend/services/identity-service
+      image_name: identity-service
+      image_tag: ${{ github.event.pull_request.head.sha || github.sha }}
+      cache_dependency_glob: backend/services/identity-service/uv.lock
+      aws_region: ap-southeast-1
+      aws_account_id: "832388983718"
+      database_url: postgresql+psycopg://postgres:postgres@localhost:5433/aimatch_test_db
+      jwt_secret_key: test-secret
+      postgres_port: "5433"
