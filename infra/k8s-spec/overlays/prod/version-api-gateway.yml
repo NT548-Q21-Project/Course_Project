@@ -7,5 +7,5 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/api-gateway:4d8b832d3b4faec360db09c8f347df6ee788f7fb
+          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/api-gateway:38eb68b9945c9c45b2e2a63ac8abfab5b56ae7ff
           imagePullPolicy: Always
