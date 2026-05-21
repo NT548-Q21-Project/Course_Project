@@ -7,5 +7,5 @@ spec:
     spec:
       containers:
         - name: ai-service
-          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/ai-service:latest
+          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/ai-service:f6c92dc2795adbc756d9affb0fed22c846024923
           imagePullPolicy: Always
