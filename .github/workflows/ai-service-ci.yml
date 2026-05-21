@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/ai-service/**"
       - ".github/workflows/ai-service-ci.yml"
@@ -13,7 +13,7 @@ on:
   pull_request:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/ai-service/**"
       - ".github/workflows/ai-service-ci.yml"
@@ -36,7 +36,6 @@ jobs:
       aws_region: ap-southeast-1
       aws_account_id: "832388983718"
       app_name: AIMatch AI Service
-      app_env: test
       database_url: postgresql+psycopg://postgres:postgres@localhost:5433/aimatch_test_db
       llm_base_url: https://example.com/v1
       llm_api_key: test-key

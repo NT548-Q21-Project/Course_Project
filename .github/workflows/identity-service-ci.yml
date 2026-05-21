@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/identity-service/**"
       - ".github/workflows/identity-service-ci.yml"
@@ -12,7 +12,7 @@ on:
   pull_request:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/identity-service/**"
       - ".github/workflows/identity-service-ci.yml"

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/recruitment-service/**"
       - ".github/workflows/recruitment-service-ci.yml"
@@ -13,7 +13,7 @@ on:
   pull_request:
     branches:
       - main
-      - develop
+      - stage
     paths:
       - "backend/services/recruitment-service/**"
       - ".github/workflows/recruitment-service-ci.yml"
