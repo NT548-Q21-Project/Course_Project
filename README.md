@@ -49,3 +49,5 @@ To get a local copy up and running follow these simple example steps.
 Project Link: [https://github.com/NT548-Q21-Project/Course_Project.git](https://github.com/NT548-Q21-Project/Course_Project.git)
 
 ## Acknowledgments
+
+chạy test luồng bảo vệ nhánh main
