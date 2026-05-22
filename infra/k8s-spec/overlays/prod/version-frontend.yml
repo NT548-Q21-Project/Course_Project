@@ -7,5 +7,5 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/frontend:0167f057a0dff3200ba5e51168e417a210999c2b
+          image: 832388983718.dkr.ecr.ap-southeast-1.amazonaws.com/frontend:3150b8d8362622d868038d12e256717f5ef78471
           imagePullPolicy: Always
