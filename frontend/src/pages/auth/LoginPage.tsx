@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Welcome Back - Devops</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Welcome Back</h2>
 
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 text-red-600 text-sm">

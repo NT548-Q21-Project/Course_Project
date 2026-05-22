@@ -40,7 +40,6 @@ app.include_router(router)
 
 @app.get("/health")
 def health_check():
-    # devops
     return {
         "service": "ai-service",
         "status": "ok",
