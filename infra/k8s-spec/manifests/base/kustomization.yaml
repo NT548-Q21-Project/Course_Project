@@ -10,7 +10,7 @@ resources:
   # - secrets/recruitment-service/
   # - secrets/ai-service/
   # - secrets/api-gateway/
-  - external-secrets/secret-store.yaml
+  # - external-secrets/secret-store.yaml
   - external-secrets/identity-service-secret.yaml
   - external-secrets/recruitment-service-secret.yaml
   - external-secrets/ai-service-secret.yaml
