@@ -115,30 +115,6 @@ env:
   AWS_ACCOUNT_ID: ${{ inputs.aws_account_id }}
 
 jobs:
-  name: Enforce stage -> main
-
-on:
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  validate-source-branch:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Validate source branch
-        run: |
-          echo "PR source branch: ${{ github.head_ref }}"
-          echo "PR target branch: ${{ github.base_ref }}"
-
-          if [[ "${{ github.head_ref }}" != "stage" ]]; then
-            echo "Only 'stage' branch can merge into 'main'"
-            exit 1
-          fi
-
-          echo "Validation passed"
-
   quality-and-test:
     name: Quality and Test
     runs-on: ubuntu-latest
@@ -258,7 +234,7 @@ jobs:
     name: Update Kustomize Version
     runs-on: ubuntu-latest
     needs: docker-build
-    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: write
     

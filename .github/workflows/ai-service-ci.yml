@@ -25,9 +25,13 @@ permissions:
   contents: write
 
 jobs:
+  check-rules:
+    uses: ./.github/workflows/enforce-rule-branch.yaml
+    secrets: inherit
   ai-service-ci:
     uses: ./.github/workflows/template-backend.yaml
     secrets: inherit
+    needs: check-rules
     with:
       service_path: backend/services/ai-service
       image_name: ai-service

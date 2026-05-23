@@ -25,9 +25,13 @@ permissions:
   contents: write
 
 jobs:
+  check-rules:
+    uses: ./.github/workflows/enforce-rule-branch.yaml
+    secrets: inherit
   api-gateway-ci:
     uses: ./.github/workflows/template-backend.yaml
     secrets: inherit
+    needs: check-rules
     with:
       service_path: backend/services/api-gateway
       image_name: api-gateway

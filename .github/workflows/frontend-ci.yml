@@ -22,9 +22,13 @@ permissions:
   contents: write
 
 jobs:
+  check-rules:
+    uses: ./.github/workflows/enforce-rule-branch.yaml
+    secrets: inherit
   frontend-ci:
     uses: ./.github/workflows/template-frontend.yaml
     secrets: inherit
+    needs: check-rules
     with:
       service_path: frontend
       image_name: frontend
