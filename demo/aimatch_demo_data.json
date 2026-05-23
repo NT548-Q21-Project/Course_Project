@@ -1,0 +1,102 @@
+[
+    {
+        "title": "Mobile App Developer (Android/Java)",
+        "description": "Chúng tôi đang tìm kiếm một Android Developer nhiệt huyết để tham gia phát triển các ứng dụng di động nội bộ và sản phẩm hướng tới người dùng cuối. Bạn sẽ làm việc trực tiếp với đội ngũ thiết kế và backend để tạo ra những trải nghiệm mượt mà nhất.",
+        "responsibilities": "Phát triển và bảo trì các ứng dụng Android gốc. Tối ưu hóa UI/UX dựa trên layout XML. Tích hợp các dịch vụ backend thông qua RESTful APIs và quản lý dữ liệu với Firebase.",
+        "requirements": "Nắm vững Java và Android Studio. Có kinh nghiệm làm việc với Firebase Authentication và Realtime Database. Hiểu biết sâu sắc về vòng đời (Lifecycle) của Android components.",
+        "nice_to_have": "Có kinh nghiệm chuyển đổi giao diện từ View sang FragmentContainerView. Từng làm việc với Cloud Firestore là một lợi thế cực lớn.",
+        "benefits": "Lương tháng 13, review lương 2 lần/năm. Hỗ trợ mua thiết bị làm việc. Môi trường trẻ trung, linh hoạt.",
+        "location": "Ho Chi Minh City",
+        "job_type": "full_time"
+    },
+    {
+        "title": "Network Automation Engineer",
+        "description": "Tham gia vào đội ngũ hạ tầng trọng yếu của công ty, chịu trách nhiệm thiết kế, triển khai và tự động hóa các hệ thống mạng quy mô lớn đa chi nhánh.",
+        "responsibilities": "Cấu hình và khắc phục sự cố các giao thức định tuyến (OSPF, BGP). Thiết kế các kiến trúc mạng dự phòng sử dụng HSRP/VRRP. Viết script tự động hóa cấu hình thiết bị mạng.",
+        "requirements": "Kiến thức vững chắc về mạng máy tính (tương đương CCNA/CCNP). Có khả năng làm việc với các công cụ mô phỏng như Cisco Packet Tracer. Thành thạo Linux.",
+        "nice_to_have": "Có kinh nghiệm sử dụng Ansible để quản lý cấu hình tự động (Configuration Management).",
+        "benefits": "Bảo hiểm sức khỏe toàn diện. Quỹ đào tạo cá nhân (tài trợ thi chứng chỉ quốc tế).",
+        "location": "Ho Chi Minh City",
+        "job_type": "full_time"
+    },
+    {
+        "title": "DevOps / SRE Engineer",
+        "description": "Đóng vai trò then chốt trong việc đảm bảo hệ thống microservices của công ty luôn hoạt động ổn định 24/7. Bạn sẽ là người xây dựng và tối ưu hóa các quy trình CI/CD và giám sát hệ thống.",
+        "responsibilities": "Đóng gói ứng dụng bằng Docker. Triển khai và quản lý hạ tầng trên môi trường Linux. Thiết lập và duy trì hệ thống cảnh báo (Alerting) và thu thập số liệu (Metrics).",
+        "requirements": "Kinh nghiệm thực tế với Docker và Docker Compose. Thành thạo việc cấu hình hệ thống giám sát sử dụng Prometheus, Grafana và cAdvisor. Nắm vững kiến trúc Microservices.",
+        "nice_to_have": "Kinh nghiệm sử dụng Zabbix hoặc PRTG Network Monitor.",
+        "benefits": "Chế độ Remote linh hoạt 2 ngày/tuần. Trợ cấp ăn trưa và gửi xe.",
+        "location": "Ha Noi",
+        "job_type": "full_time"
+    },
+    {
+        "title": ".NET Backend Developer",
+        "description": "Gia nhập đội ngũ phát triển phần mềm doanh nghiệp, tham gia xây dựng các hệ thống quản lý nội bộ như Quản lý nhân sự, Quản lý khách sạn, tích hợp chặt chẽ với cơ sở dữ liệu quan hệ.",
+        "responsibilities": "Thiết kế và phát triển các API bằng C# .NET. Xây dựng lược đồ cơ sở dữ liệu (Database Schema) và viết các truy vấn SQL tối ưu. Tham gia vào việc vẽ Sequence Diagram để tài liệu hóa hệ thống.",
+        "requirements": "Thành thạo ngôn ngữ C# (WinForms hoặc ASP.NET Core). Kiến thức sâu rộng về SQL Server. Nắm vững các nguyên lý lập trình hướng đối tượng (OOP) và thiết kế phần mềm.",
+        "nice_to_have": "Có hiểu biết về kiến trúc Clean Architecture hoặc DDD.",
+        "benefits": "Khám sức khỏe định kỳ tại các bệnh viện quốc tế. Gói chăm sóc răng miệng 5 triệu/năm.",
+        "location": "Da Nang",
+        "job_type": "full_time"
+    },
+    {
+        "title": "IoT Embedded Systems Engineer",
+        "description": "Chúng tôi đang tìm kiếm một kỹ sư đam mê thiết bị phần cứng để phát triển các giải pháp Internet of Things (IoT) ứng dụng trong nông nghiệp thông minh và nhà thông minh.",
+        "responsibilities": "Lập trình firmware cho vi điều khiển. Tích hợp các cảm biến (nhiệt độ, độ ẩm, siêu âm) để thu thập dữ liệu môi trường. Đồng bộ dữ liệu phần cứng lên hệ thống Cloud.",
+        "requirements": "Kinh nghiệm lập trình C/C++ cho các dòng vi điều khiển như ESP32 hoặc Arduino. Hiểu biết về việc giao tiếp với các module cảm biến (ví dụ: DHT11).",
+        "nice_to_have": "Từng sử dụng các nền tảng IoT Cloud như ThingSpeak hoặc MQTT Brokers.",
+        "benefits": "Thưởng dự án hấp dẫn. Cấp ngân sách để mua sắm thiết bị nghiên cứu R&D riêng.",
+        "location": "Ho Chi Minh City",
+        "job_type": "full_time"
+    },
+    {
+        "title": "AI Edge Computing Engineer",
+        "description": "Cơ hội tuyệt vời để làm việc với các công nghệ AI nhúng. Bạn sẽ tối ưu hóa các mô hình học máy để chạy mượt mà trên các thiết bị biên (Edge Devices) bị hạn chế về tài nguyên.",
+        "responsibilities": "Triển khai các mô hình phân tích video theo thời gian thực trên các board mạch nhúng. Phân tích định lượng hiệu suất mạng và chất lượng video streaming (Jitter, Latency, Throughput).",
+        "requirements": "Thành thạo Python và Linux. Có kinh nghiệm làm việc với các thiết bị như Jetson Nano hoặc Raspberry Pi. Hiểu biết về xử lý tín hiệu và truyền thông đa phương tiện.",
+        "nice_to_have": "Biết sử dụng Matlab cho việc xử lý tín hiệu (Signal Processing).",
+        "benefits": "Môi trường R&D chuyên sâu. Cơ hội hợp tác với các chuyên gia đầu ngành trong lĩnh vực AI.",
+        "location": "Ha Noi",
+        "job_type": "full_time"
+    },
+    {
+        "title": "Frontend Vue.js Developer",
+        "description": "Tìm kiếm chuyên gia Frontend để xây dựng giao diện người dùng đột phá cho các sản phẩm SaaS của công ty. Bạn sẽ là người biến các thiết kế Figma thành những trang web tốc độ cao.",
+        "responsibilities": "Phát triển các component tái sử dụng bằng Vue.js. Tối ưu hóa hiệu suất tải trang và đảm bảo tính tương thích trên nhiều thiết bị (Responsive Design).",
+        "requirements": "Nắm vững HTML5, CSS3, JavaScript (ES6+). Ít nhất 2 năm kinh nghiệm thực chiến với Vue.js (Vue 2 hoặc Vue 3). Hiểu biết về State Management (Vuex/Pinia).",
+        "nice_to_have": "Có tư duy thiết kế UI/UX tốt.",
+        "benefits": "Văn phòng làm việc hiện đại. Được cấp MacBook Pro M2.",
+        "location": "Ho Chi Minh City",
+        "job_type": "full_time"
+    },
+    {
+        "title": "Data Engineer",
+        "description": "Tham gia xây dựng nền tảng dữ liệu lớn (Big Data Platform). Bạn sẽ làm việc với hàng Terabyte dữ liệu mỗi ngày để cung cấp nguyên liệu sạch cho đội ngũ Data Science.",
+        "responsibilities": "Thiết kế và duy trì các Data Pipelines (ETL/ELT). Tối ưu hóa cấu trúc Data Warehouse. Quản lý luồng dữ liệu từ nhiều nguồn khác nhau (SQL, NoSQL, API).",
+        "requirements": "Kinh nghiệm làm việc với Python và SQL nâng cao. Từng sử dụng các công cụ orchestration như Apache Airflow. Hiểu biết về hệ sinh thái Hadoop/Spark.",
+        "nice_to_have": "Có chứng chỉ AWS Certified Data Analytics hoặc tương đương.",
+        "benefits": "Cơ hội được tài trợ tham gia các hội thảo công nghệ quốc tế (AWS re:Invent, Google Cloud Next).",
+        "location": "Da Nang",
+        "job_type": "full_time"
+    },
+    {
+        "title": "IT Helpdesk / System Administrator",
+        "description": "Người hùng thầm lặng bảo vệ và hỗ trợ hệ thống CNTT nội bộ. Chịu trách nhiệm đảm bảo mọi nhân viên đều có thiết bị và kết nối mạng hoàn hảo để làm việc.",
+        "responsibilities": "Hỗ trợ kỹ thuật (Level 1 & 2) cho người dùng cuối. Quản trị hệ thống mạng LAN/WAN nội bộ. Cài đặt, cấp phát máy tính và phần mềm theo tiêu chuẩn công ty.",
+        "requirements": "Kinh nghiệm quản trị hệ điều hành Windows (đặc biệt là Windows 10/11 Home và Pro). Có kỹ năng khắc phục sự cố phần cứng, mạng và phần mềm máy tính cơ bản.",
+        "nice_to_have": "Hiểu biết về môi trường ảo hóa (Hyper-V hoặc VMware).",
+        "benefits": "Không yêu cầu OT. Du lịch nghỉ mát công ty hàng năm.",
+        "location": "Ho Chi Minh City",
+        "job_type": "full_time"
+    },
+    {
+        "title": "Backend Python/FastAPI Developer",
+        "description": "Bạn sẽ làm việc trong đội ngũ core backend, xây dựng các API có độ trễ cực thấp phục vụ hàng triệu người dùng cho các dự án tích hợp AI.",
+        "responsibilities": "Thiết kế kiến trúc hệ thống và phát triển RESTful APIs. Tích hợp AI models vào luồng xử lý ứng dụng. Tối ưu hóa tốc độ truy vấn cơ sở dữ liệu.",
+        "requirements": "Kinh nghiệm chuyên sâu với Python và framework FastAPI. Hiểu rõ về lập trình bất đồng bộ (Asynchronous programming). Kinh nghiệm làm việc với cơ sở dữ liệu quan hệ (PostgreSQL).",
+        "nice_to_have": "Biết cách viết Unit Test và tích hợp các thư viện đo lường (Prometheus Instrumentator) vào mã nguồn.",
+        "benefits": "Gói cổ phiếu ưu đãi (ESOP) dành cho nhân viên cốt cán. Đồ ăn nhẹ, trà, cà phê miễn phí không giới hạn.",
+        "location": "Ha Noi",
+        "job_type": "full_time"
+    }
+]

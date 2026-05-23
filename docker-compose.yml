@@ -84,10 +84,49 @@ services:
     env_file:
       - ./backend/services/ai-service/.env
     ports:
-      - "8001:8001"
+      - "8001:8003"
     depends_on:
       postgres:
         condition: service_healthy
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - ai-service
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=taquoctuan01102005@gmail.com
+      - GF_SMTP_PASSWORD=kygb ktaf moxe ufdz
+      - GF_SMTP_FROM_ADDRESS=taquoctuan01102005@gmail.com
+      - GF_SMTP_FROM_NAME=Grafana-Monitoring-UIT
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
 
   frontend:
     build:
@@ -116,3 +155,6 @@ volumes:
   aimatch_postgres_data:
   postgres_test_data:
   frontend_dist:
+  grafana-storage:
+
+

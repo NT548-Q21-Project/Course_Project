@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'ai-service'
+    static_configs:
+      - targets: ['ai-service:8003']
+
+  - job_name: 'docker-containers'
+    static_configs:
+      - targets: ['cadvisor:8080']
+
+  - job_name: 'identity-service'
+    static_configs:
+      - targets: ['identity-service:8001']
+
+  - job_name: 'recruitment-service'
+    static_configs:
+      - targets: ['recruitment-service:8002']
+
+  - job_name: 'api-gateway'
+    static_configs:
+      - targets: ['api-gateway:8000']
